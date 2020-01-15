@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket=io();
+  var username;
+  function x(){var q=document.getElementById('username');
+  q.addEventListener("keyup", function(event) {
+  
+  if (event.keyCode === 13) {
+    username=q.value;
+    event.preventDefault();
+    document.getElementById('wrapper').style="display:none;";
+    
+  }
+});
+var t=document.getElementById('send');
+t.addEventListener("keyup",(evt)=>{
+  if(evt.keyCode === 13){
+    evt.preventDefault();
+    sendmessage();
+  }
+});
+
+}
+  function sendmessage(){
+    
+    
+    socket.emit('cm',document.getElementById('send').value,username);
+    
+    document.getElementById('send').value='';
+  }
+  socket.on('rm', function(msg,username,t){
+     
+      var x=t.slice(11,16);
+      var a=parseInt(x.slice(0,2),10);
+      var b=parseInt(x.slice(3,5),10);
+      a=a+5;
+      b=b+30;
+      if(b>=60){
+        a=a+1;
+        b=b-60;
+      }
+
+      if(a>=24){
+        a=a-24;
+      }
+      var hr=a.toString();
+      var min=b.toString();
+      if(hr.length==1){
+        hr='0'+hr;
+        
+      }
+      if(min.length==1){
+        min='0'+min;
+      }
+      document.getElementById('messages').innerHTML+='<div class="container"> <img src="https://www.gamingcypher.com/wp-content/uploads/2018/08/Discord-Icon-Gaming-Cypher.jpg" alt="Avatar" style="width:100%;"><p><b>'+username+'</b>:'+msg+'</p> <span class="time-right">'+hr+':'+min+'</span></div>';
+      var objDiv = document.getElementById("messages");
+      objDiv.scrollTop = objDiv.scrollHeight;
+    });
+
+</script>
+<style>
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.container {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.container img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+::-webkit-input-placeholder {
+   text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   text-align: center;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   text-align: center;  
+}
+
+:-ms-input-placeholder {  
+   text-align: center; 
+}
+#wrapper {
+  position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    align-content: center;
+    background: rgb(230, 237, 191);
+    
+    z-index: 10;        }
+.container img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+.time-right {
+  float: right;
+  color: #aaa;
+}
+
+.time-left {
+  float: left;
+  color: #999;
+}
+</style>
+</head>
+<body onload="x()">
+<div id="wrapper" style="margin:0 auto;"><input type="text" placeholder="USERNAME" style="width:25%;height:40px;position:absolute;top: 40%;left:38%;text-align: center;font-size: 20px;" id="username" ></div>
+<h2>Tenzin</h2>
+<div id="messages" style="overflow:scroll;width:800px;height:800px;">
+    
+</div>
+<div class="sm">
+    <input type="text" style="width: 75%;float: left;" id="send" >
+    <input type="button" style="width:20%;float:right;" value="Send" onclick="sendmessage()">
+</div>
+
+
+</body>
+</html>
